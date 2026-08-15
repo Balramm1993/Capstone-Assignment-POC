@@ -1,0 +1,18 @@
+{
+  "id": "A",
+  "name": "User Login",
+  "user_story": "As a registered user, I want to log in with my email and password so that I can access my account.",
+  "description": "The login screen has an Email field, a Password field, a Log In button, and a Forgot password? link. On successful login the user is taken to their dashboard. On failure an error message is shown.",
+  "acceptance_criteria": [
+    {"id": "AC1", "text": "Given a registered, active user, when they enter their correct email and password and click Log In, then they are redirected to the dashboard."},
+    {"id": "AC2", "text": "Given a registered user, when they enter a correct email but wrong password, then an error \"Invalid email or password\" is shown and they remain on the login page."},
+    {"id": "AC3", "text": "When an email that is not registered is entered with any password, then the same generic \"Invalid email or password\" error is shown (no indication of whether the email exists)."},
+    {"id": "AC4", "text": "When either field is left blank and Log In is clicked, then inline validation prompts the user to fill the required field(s); no request is sent."},
+    {"id": "AC5", "text": "When the email field contains a value that is not a valid email format, then an inline \"Enter a valid email address\" message is shown."},
+    {"id": "AC6", "text": "After 5 consecutive failed attempts within 15 minutes, the account is temporarily locked for 30 minutes and a \"Your account is locked. Try again later.\" message is shown, even if correct credentials are subsequently entered."},
+    {"id": "AC7", "text": "The email is case-insensitive (User@x.com == user@x.com); the password is case-sensitive."},
+    {"id": "AC8", "text": "On successful login a session is established; on browser refresh the user remains logged in until the session expires (24 hours) or they log out."},
+    {"id": "AC9", "text": "A user whose account is deactivated sees \"This account is inactive. Contact support.\" and is not logged in."}
+  ],
+  "notes": "Passwords are between 8 and 64 characters. Forgot password flow is out of scope."
+}
