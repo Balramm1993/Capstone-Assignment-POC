@@ -1,4 +1,4 @@
 [
-  {"feature": "User Login", "cases": 45, "gaps": [], "iterations": 2},
-  {"feature": "Apply Promo Code at Checkout", "cases": 60, "gaps": [], "iterations": 2}
+  {"feature": "User Login", "cases": 36, "gaps": [], "iterations": 2},
+  {"feature": "Apply Promo Code at Checkout", "cases": 48, "gaps": [], "iterations": 2}
 ]
