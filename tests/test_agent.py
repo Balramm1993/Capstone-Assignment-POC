@@ -1,33 +1,55 @@
 import json
+import sys
 import unittest
 from pathlib import Path
-from agent import TestCaseAgent
 
-ROOT=Path(__file__).parents[1]
+ROOT = Path(__file__).parents[1]
+sys.path.insert(0, str(ROOT))
+from agent import CATEGORIES, TestCaseAgent, generate_all
 
 class AgentTests(unittest.TestCase):
-    def test_both_specs_have_full_ac_coverage(self):
-        for spec_path in (ROOT/"specs").glob("feature_*.json"):
-            spec=json.loads(spec_path.read_text(encoding="utf-8"))
-            result=TestCaseAgent().run(spec)
+    def load(self, feature):
+        return json.loads((ROOT / "specs" / feature).read_text(encoding="utf-8"))
+
+    def test_both_specs_have_zero_final_gaps(self):
+        for feature in ("feature_a.json", "feature_b.json"):
+            result = TestCaseAgent().run(self.load(feature))
             self.assertFalse(result["critique"]["gaps"], result["critique"]["gaps"])
-            self.assertTrue(result["cases"])
+            self.assertGreaterEqual(len(result["cases"]), 36)
 
-    def test_categories_are_valid_and_traceable(self):
-        for spec_path in (ROOT/"specs").glob("feature_*.json"):
-            spec=json.loads(spec_path.read_text(encoding="utf-8"))
-            acs={x["id"] for x in spec["acceptance_criteria"]}
-            result=TestCaseAgent().run(spec)
-            for c in result["cases"]:
-                self.assertIn(c.category, {"positive","negative","boundary","edge"})
-                self.assertTrue(all(x.strip() in acs for x in c.acceptance_criteria.split(",")))
+    def test_every_ac_has_all_required_categories(self):
+        for feature in ("feature_a.json", "feature_b.json"):
+            result = TestCaseAgent().run(self.load(feature))
+            for ac in result["critique"]["acceptance_criteria"]:
+                self.assertEqual(set(ac["categories_present"]), set(CATEGORIES), ac)
 
-    def test_agent_uses_generate_critique_repair_loop(self):
-        spec=json.loads((ROOT/"specs/feature_a.json").read_text(encoding="utf-8"))
-        result=TestCaseAgent(max_iterations=3).run(spec)
+    def test_exact_required_messages_are_asserted(self):
+        for feature in ("feature_a.json", "feature_b.json"):
+            result = TestCaseAgent().run(self.load(feature))
+            messages = result["critique"]["required_messages"]
+            self.assertTrue(messages)
+            self.assertTrue(all(m["covered"] for m in messages), messages)
+
+    def test_business_rules_are_covered_for_promo(self):
+        result = TestCaseAgent().run(self.load("feature_b.json"))
+        self.assertTrue(result["critique"]["business_rules"])
+        self.assertTrue(all(r["covered"] for r in result["critique"]["business_rules"]))
+
+    def test_agent_has_real_generate_critique_repair_iterations(self):
+        result = TestCaseAgent(max_iterations=4).run(self.load("feature_a.json"))
         self.assertGreaterEqual(len(result["iterations"]), 2)
         self.assertTrue(result["iterations"][0]["critique"]["gaps"])
         self.assertFalse(result["critique"]["gaps"])
+        self.assertGreater(result["iterations"][-1]["case_count"], result["iterations"][0]["case_count"])
 
-if __name__=="__main__":
+    def test_outputs_are_importable_and_requirement_traceable(self):
+        out = ROOT / "outputs" / "_test"
+        summary = generate_all(ROOT / "specs", out)
+        self.assertEqual(len(summary["features"]), 2)
+        rows = (out / "all_test_cases.csv").read_text(encoding="utf-8-sig").splitlines()
+        self.assertGreater(len(rows), 70)
+        self.assertIn("acceptance_criteria", rows[0])
+        self.assertIn("rule_trace", rows[0])
+
+if __name__ == "__main__":
     unittest.main()
