@@ -1,29 +1,32 @@
 # Test Case Generator Agent
 
-An offline, deterministic agent that converts user stories + acceptance criteria into a requirement-traceable test suite.
+An offline, deterministic **requirement-driven test-case generation agent**. It reads user stories, descriptions, acceptance criteria and explicit feature rules, then produces a categorized, risk-prioritized and requirement-traceable suite.
 
 ## What makes it agentic
 
-The implementation deliberately uses a **generate → critique → repair** loop rather than a single generation call:
+The implementation deliberately uses a real **generate → critique → repair** loop:
 
-1. **Generate** an initial set of positive and negative cases.
-2. **Critique** the draft against every acceptance criterion and required category.
-3. **Repair** the suite by generating missing cases for each detected coverage gap.
-4. Repeat until the critique reports no gaps or the configured iteration limit is reached.
+1. **Generate** an initial positive/negative draft.
+2. **Critique** the draft against every acceptance criterion, required category, explicit business rule and quoted error message.
+3. **Repair** concrete gaps with requirement-specific boundary/edge/state/message cases.
+4. Re-run the critic until no gaps remain or the iteration limit is reached.
 
-The orchestration is independent of the generation strategy, so a future LLM adapter can replace the deterministic rule engine.
+For the supplied requirements the final run produces **36 User Login cases + 48 Promo Code cases = 84 cases**, with two iterations per feature and zero final coverage gaps.
 
 ## Features
 
 - Feature A: User Login
 - Feature B: Apply Promo Code at Checkout
 - Requirement traceability to AC IDs
+- Explicit business-rule traceability
 - Categories: positive / negative / boundary / edge
 - Risk-based priorities: P0 / P1 / P2 / P3
-- CSV suitable for import/mapping to TestRail/Zephyr
+- Exact required-message assertions
+- CSV suitable for TestRail/Zephyr mapping
 - Gherkin/BDD output
-- Explicit coverage-gap reports
-- Automated tests for the agent loop
+- Machine-readable coverage-gap reports
+- Automated tests for generation, critique, repair and exports
+- No external API key required
 
 ## Run
 
@@ -36,19 +39,25 @@ Outputs are written to `outputs/`.
 Run tests:
 
 ```bash
-python -m unittest discover -s tests
+python -m unittest discover -s tests -v
 ```
 
-or, if pytest is installed:
+## Generated artifacts
 
-```bash
-pytest
-```
+- `outputs/all_test_cases.csv`
+- `outputs/test_cases_A.csv`
+- `outputs/test_cases_B.csv`
+- `outputs/test_suite_A.feature`
+- `outputs/test_suite_B.feature`
+- `outputs/coverage_report_A.json`
+- `outputs/coverage_report_B.json`
+- `outputs/coverage_summary.json`
+
+Each CSV test case includes feature, category, priority, acceptance criterion, rule trace, preconditions, steps, expected result and risk.
 
 ## Repository layout
 
 ```text
-test-case-generator/
 ├── agent.py
 ├── requirements.txt
 ├── README.md
@@ -60,21 +69,23 @@ test-case-generator/
 │   └── test_agent.py
 └── docs/
     ├── DESIGN.md
-    └── REFLECTION.md
+    ├── REFLECTION.md
+    └── REFLECTION.pdf
 ```
 
 ## Demo
 
 For a 10-minute evaluator demo:
 
-1. Show Feature A and Feature B input specs.
+1. Show the two input specifications.
 2. Run `python agent.py`.
-3. Open `outputs/all_test_cases.csv`.
-4. Filter by `acceptance_criteria`, `category`, and `priority`.
-5. Open the coverage report and show that the critique loop found and repaired gaps.
-6. Change one acceptance criterion or add a new rule, rerun, and show the generated repair case.
-7. Show the Gherkin output.
+3. Show that iteration 1 contains coverage gaps.
+4. Show iteration 2 after targeted repairs.
+5. Open `outputs/all_test_cases.csv` and filter by AC/category/priority.
+6. Open the coverage reports and show zero final gaps, including business rules and exact messages.
+7. Open the Gherkin suite.
+8. Run `python -m unittest discover -s tests -v`.
 
-## Limitations / next step
+## Design decision
 
-This submission is intentionally offline and deterministic so it is reproducible without credentials. For production use, the generator can be replaced with an LLM provider while retaining the same agent state, critique contract, traceability checks, and export layer.
+The core engine is deterministic and offline so the capstone is reproducible without credentials or network access. The orchestration and structured output contract are intentionally separated from the generator, so an LLM-backed generator can be added later without replacing the critic, traceability or export layers.
