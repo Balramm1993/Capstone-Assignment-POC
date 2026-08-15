@@ -1,191 +1,143 @@
-"""
-Test Case Generator Agent
--------------------------
-Generates structured manual test cases and Gherkin scenarios from JSON feature specifications.
-
-The implementation is intentionally deterministic and can run without an LLM/API key.  It uses
-small, composable generators so the output is easy to inspect, test, and extend.
-"""
-
+"""Deterministic test-case generator using a generate -> critique -> repair loop."""
 from __future__ import annotations
 
 import argparse
 import csv
 import json
-import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
+CATEGORIES = ("positive", "negative", "boundary", "edge")
+PRIORITIES = ("P0", "P1", "P2", "P3")
 
 @dataclass
 class TestCase:
-    test_case_id: str
+    id: str
     feature: str
-    scenario: str
-    test_type: str
+    category: str
     priority: str
+    acceptance_criteria: str
+    title: str
     preconditions: str
     steps: str
     expected_result: str
-    source_requirement: str
+    risk: str
+    source: str = "generated"
 
+def tc(feature, category, priority, ac, title, preconditions, steps, expected, risk):
+    return TestCase("", feature, category, priority, ac, title, preconditions, steps, expected, risk)
 
-class TestCaseGenerator:
-    """Generate positive, negative, boundary, and validation cases from feature JSON."""
+class TestCaseAgent:
+    def __init__(self, max_iterations: int = 3):
+        self.max_iterations = max_iterations
+        self.iterations: list[dict[str, Any]] = []
 
-    def __init__(self, output_dir: str | Path = "outputs") -> None:
-        self.output_dir = Path(output_dir)
-
-    @staticmethod
-    def _slug(value: str) -> str:
-        value = re.sub(r"[^A-Za-z0-9]+", "_", value).strip("_")
-        return value or "FEATURE"
-
-    @staticmethod
-    def _normalise_steps(steps: Iterable[str]) -> str:
-        return "\n".join(f"{i}. {step}" for i, step in enumerate(steps, 1))
-
-    def _generate_cases_for_feature(self, feature: dict[str, Any], feature_index: int) -> list[TestCase]:
-        name = str(feature.get("name", f"Feature {feature_index}"))
-        description = str(feature.get("description", ""))
-        requirements = feature.get("requirements", [])
-        if isinstance(requirements, str):
-            requirements = [requirements]
-
-        cases: list[TestCase] = []
-        prefix = f"TC-{feature_index:02d}"
-        for req_index, req in enumerate(requirements, 1):
-            req_text = str(req)
-            source = req_text
-            base_id = f"{prefix}-{req_index:02d}"
-            cases.append(
-                TestCase(
-                    test_case_id=f"{base_id}-POS",
-                    feature=name,
-                    scenario=f"Verify {req_text}",
-                    test_type="Positive",
-                    priority="High",
-                    preconditions=description or "Application is available and the required test data is prepared.",
-                    steps=self._normalise_steps([
-                        "Open the application/feature.",
-                        f"Perform the actions required to satisfy: {req_text}",
-                        "Submit or complete the operation.",
-                    ]),
-                    expected_result=f"The system successfully satisfies the requirement: {req_text}.",
-                    source_requirement=source,
-                )
-            )
-            cases.append(
-                TestCase(
-                    test_case_id=f"{base_id}-NEG",
-                    feature=name,
-                    scenario=f"Reject invalid input for {req_text}",
-                    test_type="Negative",
-                    priority="High",
-                    preconditions=description or "Application is available.",
-                    steps=self._normalise_steps([
-                        "Open the application/feature.",
-                        f"Attempt the operation for: {req_text} using invalid, missing, or unauthorized data.",
-                        "Submit or complete the operation.",
-                    ]),
-                    expected_result="The system rejects the invalid operation and displays a clear validation or authorization message without corrupting data.",
-                    source_requirement=source,
-                )
-            )
-            cases.append(
-                TestCase(
-                    test_case_id=f"{base_id}-BND",
-                    feature=name,
-                    scenario=f"Verify boundary conditions for {req_text}",
-                    test_type="Boundary",
-                    priority="Medium",
-                    preconditions=description or "Application is available and boundary values are known.",
-                    steps=self._normalise_steps([
-                        "Open the application/feature.",
-                        f"Execute: {req_text} with minimum, maximum, empty, and just-outside-boundary values as applicable.",
-                        "Submit or complete the operation.",
-                    ]),
-                    expected_result="Boundary values accepted by the specification succeed; out-of-range values are rejected with appropriate validation feedback.",
-                    source_requirement=source,
-                )
-            )
-
-        if not cases:
-            cases.append(
-                TestCase(
-                    test_case_id=f"{prefix}-01-POS",
-                    feature=name,
-                    scenario=f"Verify {name}",
-                    test_type="Positive",
-                    priority="Medium",
-                    preconditions=description or "Application is available.",
-                    steps=self._normalise_steps(["Open the feature.", "Execute the documented happy path.", "Complete the operation."]),
-                    expected_result="The feature completes successfully and produces the documented result.",
-                    source_requirement=description,
-                )
-            )
+    def generate_initial(self, spec: dict[str, Any]) -> list[TestCase]:
+        cases = []
+        feature = spec["name"]
+        for ac in spec["acceptance_criteria"]:
+            ac_id, text = ac["id"], ac["text"]
+            cases.append(tc(feature, "positive", "P0", ac_id, f"Verify {ac_id} happy path",
+                            "Feature is available", f"Execute the behavior described by {ac_id}",
+                            f"The acceptance criterion is satisfied: {text}", "Business-critical behavior"))
+            cases.append(tc(feature, "negative", "P1", ac_id, f"Reject invalid condition for {ac_id}",
+                            "Feature is available", "Exercise the requirement with an invalid, missing, expired, unauthorized, or otherwise prohibited condition",
+                            "The invalid condition is rejected with the required validation/error/state behavior.", "Error handling"))
         return cases
 
-    def generate(self, specs: list[dict[str, Any]]) -> list[TestCase]:
-        cases: list[TestCase] = []
-        for index, feature in enumerate(specs, 1):
-            cases.extend(self._generate_cases_for_feature(feature, index))
-        return cases
-
-    @staticmethod
-    def to_gherkin(cases: list[TestCase]) -> str:
-        lines = ["Feature: Generated test suite", ""]
+    def critique(self, spec, cases):
+        ac_ids = [x["id"] for x in spec["acceptance_criteria"]]
+        covered = {ac: set() for ac in ac_ids}
         for case in cases:
-            lines.extend([
-                f"  # {case.test_case_id} | {case.test_type} | {case.priority}",
-                f"  Scenario: {case.scenario}",
-                "    Given the application is available",
-                "    When the test steps are executed",
-                f"    And the requirement is exercised: {case.source_requirement}",
-                f"    Then {case.expected_result}",
-                "",
-            ])
-        return "\n".join(lines).rstrip() + "\n"
+            for ac in case.acceptance_criteria.split(","):
+                ac = ac.strip()
+                if ac in covered:
+                    covered[ac].add(case.category)
+        gaps = []
+        for ac in ac_ids:
+            missing = sorted(set(CATEGORIES) - covered[ac])
+            if not covered[ac]:
+                gaps.append({"ac": ac, "reason": "No test case traces to this acceptance criterion", "missing_categories": list(CATEGORIES)})
+            elif missing:
+                gaps.append({"ac": ac, "reason": "Category coverage gap", "missing_categories": missing})
+        return {"covered_acceptance_criteria": [ac for ac in ac_ids if covered[ac]],
+                "uncovered_acceptance_criteria": [ac for ac in ac_ids if not covered[ac]],
+                "gaps": gaps, "case_count": len(cases)}
 
-    def write_outputs(self, cases: list[TestCase]) -> dict[str, Path]:
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        csv_path = self.output_dir / "test_cases.csv"
-        feature_path = self.output_dir / "test_suite.feature"
-        fields = list(asdict(cases[0]).keys()) if cases else [f.name for f in TestCase.__dataclass_fields__.values()]
-        with csv_path.open("w", newline="", encoding="utf-8") as handle:
-            writer = csv.DictWriter(handle, fieldnames=fields)
-            writer.writeheader()
-            writer.writerows(asdict(case) for case in cases)
-        feature_path.write_text(self.to_gherkin(cases), encoding="utf-8")
-        return {"csv": csv_path, "feature": feature_path}
+    def repair_from_gaps(self, spec, cases, critique):
+        existing = {(c.acceptance_criteria, c.category, c.title) for c in cases}
+        additions = []
+        for gap in critique["gaps"]:
+            for category in gap["missing_categories"]:
+                additions.extend(self._missing_case(spec, gap["ac"], category, existing))
+        return cases + additions
 
+    def run(self, spec):
+        self.iterations = []
+        cases = self.generate_initial(spec)
+        for i in range(1, self.max_iterations + 1):
+            critique = self.critique(spec, cases)
+            self.iterations.append({"iteration": i, "critique": critique})
+            if not critique["gaps"]:
+                break
+            repaired = self.repair_from_gaps(spec, cases, critique)
+            if len(repaired) == len(cases):
+                break
+            cases = repaired
+        for n, case in enumerate(cases, 1):
+            case.id = f"{spec['id']}-TC-{n:03d}"
+        final = self.critique(spec, cases)
+        return {"spec": spec, "cases": cases, "critique": final, "iterations": self.iterations}
 
-def load_specs(spec_dir: str | Path) -> list[dict[str, Any]]:
-    path = Path(spec_dir)
-    specs: list[dict[str, Any]] = []
-    for file in sorted(path.glob("*.json")):
-        data = json.loads(file.read_text(encoding="utf-8"))
-        if isinstance(data, list):
-            specs.extend(data)
-        else:
-            specs.append(data)
-    return specs
+    def _missing_case(self, spec, ac, category, existing):
+        feature = spec["name"]
+        text = next(x["text"] for x in spec["acceptance_criteria"] if x["id"] == ac)
+        templates = {
+            "positive": (f"Confirm {ac} with valid inputs", "Use valid inputs and follow the documented flow", f"The required behavior succeeds: {text}"),
+            "negative": (f"Reject invalid input/state for {ac}", "Use an invalid, missing, unauthorized, expired, or otherwise prohibited condition", "The system rejects the condition and preserves the required error/state behavior."),
+            "boundary": (f"Verify boundary condition for {ac}", "Execute the nearest documented minimum, maximum, threshold, count, amount, or timing boundary", "The system applies the requirement correctly at the boundary and does not cross the documented limit."),
+            "edge": (f"Verify edge condition for {ac}", "Exercise an unusual sequence, normalization, timing, state transition, or combination relevant to the requirement", "The system handles the edge condition safely while preserving the acceptance criterion."),
+        }
+        title, steps, expected = templates[category]
+        if (ac, category, title) in existing:
+            return []
+        priority = "P0" if category in ("positive", "negative", "boundary") else "P1"
+        return [tc(feature, category, priority, ac, title, "Feature is available", steps, expected, "Coverage gap repair")]
 
+def write_outputs(result, outdir: Path):
+    outdir.mkdir(parents=True, exist_ok=True)
+    fields = [f.name for f in TestCase.__dataclass_fields__.values()]
+    with (outdir / "test_cases.csv").open("w", newline="", encoding="utf-8-sig") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader()
+        for case in result["cases"]: writer.writerow(asdict(case))
+    lines = []
+    for feature in sorted({c.feature for c in result["cases"]}):
+        lines.extend([f"Feature: {feature}", ""])
+        for case in (c for c in result["cases"] if c.feature == feature):
+            lines.extend([f"  # {case.id} | {case.category} | {case.priority} | {case.acceptance_criteria}",
+                          f"  Scenario: {case.title}", f"    Given {case.preconditions}",
+                          f"    When {case.steps}", f"    Then {case.expected_result}", ""])
+    (outdir / "test_suite.feature").write_text("\n".join(lines), encoding="utf-8")
+    report = {"features": [{"id": result["spec"]["id"], "name": result["spec"]["name"],
+                             "generated_cases": len(result["cases"]), "coverage_gap_report": result["critique"]}],
+              "iterations": result["iterations"]}
+    (outdir / f"coverage_report_{result['spec']['id']}.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate test cases from JSON specifications")
-    parser.add_argument("--specs", default="specs", help="Directory containing feature JSON files")
-    parser.add_argument("--output", default="outputs", help="Directory for generated artifacts")
-    args = parser.parse_args()
-    generator = TestCaseGenerator(args.output)
-    specs = load_specs(args.specs)
-    cases = generator.generate(specs)
-    outputs = generator.write_outputs(cases)
-    print(f"Generated {len(cases)} test cases")
-    for kind, path in outputs.items():
-        print(f"{kind}: {path}")
+def main():
+    parser = argparse.ArgumentParser(description="Generate traceable test cases from JSON feature specifications")
+    parser.add_argument("--spec-dir", default="specs"); parser.add_argument("--out-dir", default="outputs"); parser.add_argument("--iterations", type=int, default=3)
+    args = parser.parse_args(); spec_dir, outdir = Path(args.spec_dir), Path(args.out_dir)
+    all_cases, summary = [], []
+    for path in sorted(spec_dir.glob("feature_*.json")):
+        spec = json.loads(path.read_text(encoding="utf-8")); result = TestCaseAgent(args.iterations).run(spec)
+        write_outputs(result, outdir); all_cases.extend(result["cases"])
+        summary.append({"feature": spec["name"], "cases": len(result["cases"]), "gaps": result["critique"]["gaps"], "iterations": len(result["iterations"])})
+    fields = [f.name for f in TestCase.__dataclass_fields__.values()]
+    with (outdir / "all_test_cases.csv").open("w", newline="", encoding="utf-8-sig") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields); writer.writeheader()
+        for case in all_cases: writer.writerow(asdict(case))
+    (outdir / "coverage_summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps({"features": summary, "total_cases": len(all_cases)}, indent=2, ensure_ascii=False))
 
-
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__": main()
