@@ -28,7 +28,7 @@ For the supplied requirements the final run produces **36 User Login cases + 48 
 - Automated tests for generation, critique, repair and exports
 - No external API key required
 
-## Run
+## Run the generator
 
 ```bash
 python agent.py
@@ -36,7 +36,28 @@ python agent.py
 
 Outputs are written to `outputs/`.
 
-Run tests:
+## Run the interactive evaluator demo
+
+```bash
+python demo.py
+```
+
+The interactive CLI lets an evaluator:
+
+1. Generate/regenerate both suites.
+2. Show the **generate → critique → repair** iterations and detected gaps.
+3. Inspect cases for a specific acceptance criterion and category.
+4. Ask the agent requirement-focused questions such as:
+   - `What coverage gaps remain for login?`
+   - `Show boundary cases for AC6`
+   - `Why did the agent add cases for AC8?`
+   - `Show negative cases for promo AC12`
+5. Show the final coverage summary.
+6. Locate the exported CSV, Gherkin and coverage reports.
+
+This is the recommended live demo entry point because it demonstrates that the project is an interactive test-design agent rather than only a folder of pre-generated files.
+
+## Run tests
 
 ```bash
 python -m unittest discover -s tests -v
@@ -59,6 +80,7 @@ Each CSV test case includes feature, category, priority, acceptance criterion, r
 
 ```text
 ├── agent.py
+├── demo.py
 ├── requirements.txt
 ├── README.md
 ├── specs/
@@ -73,18 +95,17 @@ Each CSV test case includes feature, category, priority, acceptance criterion, r
     └── REFLECTION.pdf
 ```
 
-## Demo
-
-For a 10-minute evaluator demo:
+## Recommended 10-minute evaluator demo
 
 1. Show the two input specifications.
-2. Run `python agent.py`.
-3. Show that iteration 1 contains coverage gaps.
-4. Show iteration 2 after targeted repairs.
-5. Open `outputs/all_test_cases.csv` and filter by AC/category/priority.
-6. Open the coverage reports and show zero final gaps, including business rules and exact messages.
-7. Open the Gherkin suite.
-8. Run `python -m unittest discover -s tests -v`.
+2. Run `python demo.py`.
+3. Choose **2** to show the generate → critique → repair loop.
+4. Choose **3** and inspect an important boundary criterion such as Login AC6 or Promo AC3.
+5. Choose **4** and ask a coverage/reasoning question.
+6. Open `outputs/all_test_cases.csv` and filter by AC/category/priority.
+7. Open the coverage reports and show zero final gaps, including business rules and exact messages.
+8. Open the Gherkin suite.
+9. Run `python -m unittest discover -s tests -v`.
 
 ## Design decision
 
