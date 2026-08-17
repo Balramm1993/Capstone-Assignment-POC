@@ -1,0 +1,18 @@
+{
+  "feature_id": "A",
+  "feature_name": "User Login",
+  "total_cases": 9,
+  "iterations": 1,
+  "coverage": {
+    "AC8": 1,
+    "AC6": 1,
+    "AC1": 2,
+    "AC2": 1,
+    "AC3": 1,
+    "AC4": 1,
+    "AC5": 1,
+    "AC7": 1
+  },
+  "gaps": [],
+  "timestamp": "2026-08-17T21:05:24.590605"
+}

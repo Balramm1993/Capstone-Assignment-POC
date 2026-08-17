@@ -1,0 +1,83 @@
+{
+  "id": "B",
+  "name": "Apply Promo Code at Checkout",
+  "description": "Customers should be able to apply valid promo codes during checkout to receive discounts.",
+  "business_rules": [
+    "Promo codes are case-insensitive",
+    "Each promo code has a maximum usage limit",
+    "Promo codes can be single-use or multi-use",
+    "Expired promo codes cannot be applied",
+    "Promo code discounts are applied before tax calculation"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "criteria": "User can apply a valid promo code and receive discount",
+      "positive": true
+    },
+    {
+      "id": "AC2",
+      "criteria": "User cannot apply an invalid promo code",
+      "positive": false,
+      "expected_message": "Invalid promo code"
+    },
+    {
+      "id": "AC3",
+      "criteria": "User cannot apply an expired promo code",
+      "positive": false,
+      "expected_message": "Promo code has expired"
+    },
+    {
+      "id": "AC4",
+      "criteria": "Promo code is case-insensitive",
+      "positive": true
+    },
+    {
+      "id": "AC5",
+      "criteria": "User cannot apply promo code that has reached usage limit",
+      "positive": false,
+      "expected_message": "Promo code usage limit reached"
+    },
+    {
+      "id": "AC6",
+      "criteria": "User cannot apply empty promo code",
+      "positive": false,
+      "expected_message": "Promo code is required"
+    },
+    {
+      "id": "AC7",
+      "criteria": "Single-use promo code cannot be reused",
+      "positive": false,
+      "expected_message": "Promo code already used"
+    },
+    {
+      "id": "AC8",
+      "criteria": "Multi-use promo code can be applied multiple times within limit",
+      "positive": true
+    },
+    {
+      "id": "AC9",
+      "criteria": "Discount is calculated before tax",
+      "positive": true
+    },
+    {
+      "id": "AC10",
+      "criteria": "Minimum order amount requirement is enforced",
+      "positive": false,
+      "expected_message": "Order total below minimum required"
+    },
+    {
+      "id": "AC11",
+      "criteria": "Promo code with category restriction can only be applied to eligible items",
+      "positive": false,
+      "expected_message": "Promo code not applicable to selected items"
+    },
+    {
+      "id": "AC12",
+      "criteria": "Maximum discount cap is enforced if defined",
+      "positive": true
+    }
+  ],
+  "categories": ["positive", "negative", "boundary", "edge"],
+  "risk_levels": ["P0", "P1", "P2", "P3"]
+}

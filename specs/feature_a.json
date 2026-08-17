@@ -1,0 +1,63 @@
+{
+  "id": "A",
+  "name": "User Login",
+  "description": "Users should be able to log in to the system with a valid username and password.",
+  "business_rules": [
+    "Passwords must be at least 8 characters long",
+    "Usernames must be unique and at least 3 characters",
+    "Account locks after 5 failed login attempts",
+    "Session timeout is 30 minutes of inactivity",
+    "Users must accept terms before first login"
+  ],
+  "acceptance_criteria": [
+    {
+      "id": "AC1",
+      "criteria": "User can log in with valid username and password",
+      "positive": true
+    },
+    {
+      "id": "AC2",
+      "criteria": "User cannot log in with invalid password",
+      "positive": false,
+      "expected_message": "Invalid username or password"
+    },
+    {
+      "id": "AC3",
+      "criteria": "User cannot log in with non-existent username",
+      "positive": false,
+      "expected_message": "Invalid username or password"
+    },
+    {
+      "id": "AC4",
+      "criteria": "User cannot log in with empty username",
+      "positive": false,
+      "expected_message": "Username is required"
+    },
+    {
+      "id": "AC5",
+      "criteria": "User cannot log in with empty password",
+      "positive": false,
+      "expected_message": "Password is required"
+    },
+    {
+      "id": "AC6",
+      "criteria": "Account locks after 5 failed login attempts",
+      "positive": false,
+      "expected_message": "Account locked. Please contact support."
+    },
+    {
+      "id": "AC7",
+      "criteria": "User session expires after 30 minutes of inactivity",
+      "positive": false,
+      "expected_message": "Session expired. Please log in again."
+    },
+    {
+      "id": "AC8",
+      "criteria": "User must accept terms and conditions before first login",
+      "positive": false,
+      "expected_message": "You must accept the terms and conditions"
+    }
+  ],
+  "categories": ["positive", "negative", "boundary", "edge"],
+  "risk_levels": ["P0", "P1", "P2", "P3"]
+}
