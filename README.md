@@ -80,7 +80,6 @@ http://127.0.0.1:5002
 The UI provides buttons to `List features`, `Generate suites`, `Show A loop`, `Show AC6 cases`, `Show coverage`, and `List outputs`.
 
 There is also a small programmatic client `demo_web_client.py` that exercises the endpoints and prints results.
-
 ## Run tests
 
 ```bash
