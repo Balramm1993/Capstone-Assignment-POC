@@ -1,0 +1,775 @@
+{
+  "feature": "User Login",
+  "acceptance_criteria_count": 9,
+  "generated_case_count": 36,
+  "coverage": {
+    "case_count": 36,
+    "acceptance_criteria": [
+      {
+        "ac": "AC1",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC2",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC3",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC4",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC5",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC6",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC7",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC8",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC9",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      }
+    ],
+    "business_rules": [
+      {
+        "rule": "NOTE1",
+        "text": "Passwords are between 8 and 64 characters. Forgot password flow is out of scope.",
+        "covered": true,
+        "example_test_cases": [
+          "A-TC-001",
+          "A-TC-003",
+          "A-TC-004",
+          "A-TC-005",
+          "A-TC-006"
+        ]
+      }
+    ],
+    "required_messages": [
+      {
+        "ac": "AC2",
+        "message": "Invalid email or password",
+        "covered": true,
+        "example_test_cases": [
+          "A-TC-003",
+          "A-TC-004"
+        ]
+      },
+      {
+        "ac": "AC3",
+        "message": "Invalid email or password",
+        "covered": true,
+        "example_test_cases": [
+          "A-TC-005",
+          "A-TC-006"
+        ]
+      },
+      {
+        "ac": "AC5",
+        "message": "Enter a valid email address",
+        "covered": true,
+        "example_test_cases": [
+          "A-TC-009",
+          "A-TC-010"
+        ]
+      },
+      {
+        "ac": "AC6",
+        "message": "Your account is locked. Try again later.",
+        "covered": true,
+        "example_test_cases": [
+          "A-TC-011",
+          "A-TC-012"
+        ]
+      },
+      {
+        "ac": "AC9",
+        "message": "This account is inactive. Contact support.",
+        "covered": true,
+        "example_test_cases": [
+          "A-TC-017",
+          "A-TC-018"
+        ]
+      }
+    ],
+    "gaps": [],
+    "covered_acceptance_criteria": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9"
+    ],
+    "uncovered_acceptance_criteria": []
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "case_count": 18,
+      "critique": {
+        "case_count": 18,
+        "acceptance_criteria": [
+          {
+            "ac": "AC1",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC2",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC3",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC4",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC5",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC6",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC7",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC8",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC9",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          }
+        ],
+        "business_rules": [
+          {
+            "rule": "NOTE1",
+            "text": "Passwords are between 8 and 64 characters. Forgot password flow is out of scope.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          }
+        ],
+        "required_messages": [
+          {
+            "ac": "AC2",
+            "message": "Invalid email or password",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC3",
+            "message": "Invalid email or password",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC5",
+            "message": "Enter a valid email address",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC6",
+            "message": "Your account is locked. Try again later.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC9",
+            "message": "This account is inactive. Contact support.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "type": "acceptance_criterion",
+            "id": "AC1",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC2",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC3",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC4",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC5",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC6",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC7",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC8",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC9",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          }
+        ],
+        "covered_acceptance_criteria": [],
+        "uncovered_acceptance_criteria": [
+          "AC1",
+          "AC2",
+          "AC3",
+          "AC4",
+          "AC5",
+          "AC6",
+          "AC7",
+          "AC8",
+          "AC9"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "case_count": 36,
+      "critique": {
+        "case_count": 36,
+        "acceptance_criteria": [
+          {
+            "ac": "AC1",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC2",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC3",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC4",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC5",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC6",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC7",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC8",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC9",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          }
+        ],
+        "business_rules": [
+          {
+            "rule": "NOTE1",
+            "text": "Passwords are between 8 and 64 characters. Forgot password flow is out of scope.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          }
+        ],
+        "required_messages": [
+          {
+            "ac": "AC2",
+            "message": "Invalid email or password",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC3",
+            "message": "Invalid email or password",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC5",
+            "message": "Enter a valid email address",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC6",
+            "message": "Your account is locked. Try again later.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC9",
+            "message": "This account is inactive. Contact support.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          }
+        ],
+        "gaps": [],
+        "covered_acceptance_criteria": [
+          "AC1",
+          "AC2",
+          "AC3",
+          "AC4",
+          "AC5",
+          "AC6",
+          "AC7",
+          "AC8",
+          "AC9"
+        ],
+        "uncovered_acceptance_criteria": []
+      }
+    }
+  ]
+}

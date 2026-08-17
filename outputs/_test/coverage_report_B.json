@@ -1,0 +1,1238 @@
+{
+  "feature": "Apply Promo Code at Checkout",
+  "acceptance_criteria_count": 12,
+  "generated_case_count": 48,
+  "coverage": {
+    "case_count": 48,
+    "acceptance_criteria": [
+      {
+        "ac": "AC1",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC2",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC3",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC4",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC5",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC6",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC7",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC8",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC9",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC10",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC11",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      },
+      {
+        "ac": "AC12",
+        "categories_present": [
+          "boundary",
+          "edge",
+          "negative",
+          "positive"
+        ],
+        "required_categories": [
+          "positive",
+          "negative",
+          "boundary",
+          "edge"
+        ],
+        "missing_categories": []
+      }
+    ],
+    "business_rules": [
+      {
+        "rule": "RULE1",
+        "text": "Percentage codes: SAVE10 = 10% off item subtotal.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-001",
+          "B-TC-002",
+          "B-TC-003",
+          "B-TC-005",
+          "B-TC-011"
+        ]
+      },
+      {
+        "rule": "RULE2",
+        "text": "Fixed amount codes: FLAT200 = ₹200 off item subtotal.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-001",
+          "B-TC-003",
+          "B-TC-004",
+          "B-TC-005",
+          "B-TC-006"
+        ]
+      },
+      {
+        "rule": "RULE3",
+        "text": "Codes are case-insensitive.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-012",
+          "B-TC-035",
+          "B-TC-036"
+        ]
+      },
+      {
+        "rule": "RULE4",
+        "text": "Some codes require a minimum subtotal; FLAT200 requires subtotal ≥ ₹1000.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-001",
+          "B-TC-003",
+          "B-TC-004",
+          "B-TC-005",
+          "B-TC-006"
+        ]
+      },
+      {
+        "rule": "RULE5",
+        "text": "Expired codes are rejected.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-002",
+          "B-TC-004",
+          "B-TC-005",
+          "B-TC-007",
+          "B-TC-008"
+        ]
+      },
+      {
+        "rule": "RULE6",
+        "text": "A single-use code cannot be reused by the same customer after redemption.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-002",
+          "B-TC-004",
+          "B-TC-005",
+          "B-TC-006",
+          "B-TC-007"
+        ]
+      },
+      {
+        "rule": "RULE7",
+        "text": "Only one promo code may be applied; a second replaces the first only after confirmation.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-002",
+          "B-TC-004",
+          "B-TC-005",
+          "B-TC-006",
+          "B-TC-007"
+        ]
+      },
+      {
+        "rule": "RULE8",
+        "text": "Fixed discount is capped so discounted subtotal never goes below ₹0.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-001",
+          "B-TC-002",
+          "B-TC-003",
+          "B-TC-004",
+          "B-TC-005"
+        ]
+      },
+      {
+        "rule": "RULE9",
+        "text": "Discount applies to subtotal only; shipping and taxes are calculated on discounted subtotal.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-001",
+          "B-TC-002",
+          "B-TC-003",
+          "B-TC-005",
+          "B-TC-012"
+        ]
+      }
+    ],
+    "required_messages": [
+      {
+        "ac": "AC3",
+        "message": "This code requires a minimum order of ₹1000.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-005",
+          "B-TC-006"
+        ]
+      },
+      {
+        "ac": "AC4",
+        "message": "This code has expired.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-007",
+          "B-TC-008"
+        ]
+      },
+      {
+        "ac": "AC5",
+        "message": "Invalid promo code.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-009",
+          "B-TC-010"
+        ]
+      },
+      {
+        "ac": "AC7",
+        "message": "This code has already been used.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-013",
+          "B-TC-014"
+        ]
+      },
+      {
+        "ac": "AC10",
+        "message": "Enter a promo code.",
+        "covered": true,
+        "example_test_cases": [
+          "B-TC-019",
+          "B-TC-020"
+        ]
+      }
+    ],
+    "gaps": [],
+    "covered_acceptance_criteria": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12"
+    ],
+    "uncovered_acceptance_criteria": []
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "case_count": 24,
+      "critique": {
+        "case_count": 24,
+        "acceptance_criteria": [
+          {
+            "ac": "AC1",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC2",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC3",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC4",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC5",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC6",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC7",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC8",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC9",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC10",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC11",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "ac": "AC12",
+            "categories_present": [
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": [
+              "boundary",
+              "edge"
+            ]
+          }
+        ],
+        "business_rules": [
+          {
+            "rule": "RULE1",
+            "text": "Percentage codes: SAVE10 = 10% off item subtotal.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE2",
+            "text": "Fixed amount codes: FLAT200 = ₹200 off item subtotal.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE3",
+            "text": "Codes are case-insensitive.",
+            "covered": true,
+            "example_test_cases": [
+              ""
+            ]
+          },
+          {
+            "rule": "RULE4",
+            "text": "Some codes require a minimum subtotal; FLAT200 requires subtotal ≥ ₹1000.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE5",
+            "text": "Expired codes are rejected.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE6",
+            "text": "A single-use code cannot be reused by the same customer after redemption.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE7",
+            "text": "Only one promo code may be applied; a second replaces the first only after confirmation.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE8",
+            "text": "Fixed discount is capped so discounted subtotal never goes below ₹0.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE9",
+            "text": "Discount applies to subtotal only; shipping and taxes are calculated on discounted subtotal.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          }
+        ],
+        "required_messages": [
+          {
+            "ac": "AC3",
+            "message": "This code requires a minimum order of ₹1000.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC4",
+            "message": "This code has expired.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC5",
+            "message": "Invalid promo code.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC7",
+            "message": "This code has already been used.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC10",
+            "message": "Enter a promo code.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          }
+        ],
+        "gaps": [
+          {
+            "type": "acceptance_criterion",
+            "id": "AC1",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC2",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC3",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC4",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC5",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC6",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC7",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC8",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC9",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC10",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC11",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          },
+          {
+            "type": "acceptance_criterion",
+            "id": "AC12",
+            "reason": "Missing required category coverage",
+            "missing": [
+              "boundary",
+              "edge"
+            ]
+          }
+        ],
+        "covered_acceptance_criteria": [],
+        "uncovered_acceptance_criteria": [
+          "AC1",
+          "AC2",
+          "AC3",
+          "AC4",
+          "AC5",
+          "AC6",
+          "AC7",
+          "AC8",
+          "AC9",
+          "AC10",
+          "AC11",
+          "AC12"
+        ]
+      }
+    },
+    {
+      "iteration": 2,
+      "case_count": 48,
+      "critique": {
+        "case_count": 48,
+        "acceptance_criteria": [
+          {
+            "ac": "AC1",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC2",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC3",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC4",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC5",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC6",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC7",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC8",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC9",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC10",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC11",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          },
+          {
+            "ac": "AC12",
+            "categories_present": [
+              "boundary",
+              "edge",
+              "negative",
+              "positive"
+            ],
+            "required_categories": [
+              "positive",
+              "negative",
+              "boundary",
+              "edge"
+            ],
+            "missing_categories": []
+          }
+        ],
+        "business_rules": [
+          {
+            "rule": "RULE1",
+            "text": "Percentage codes: SAVE10 = 10% off item subtotal.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE2",
+            "text": "Fixed amount codes: FLAT200 = ₹200 off item subtotal.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE3",
+            "text": "Codes are case-insensitive.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE4",
+            "text": "Some codes require a minimum subtotal; FLAT200 requires subtotal ≥ ₹1000.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE5",
+            "text": "Expired codes are rejected.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE6",
+            "text": "A single-use code cannot be reused by the same customer after redemption.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE7",
+            "text": "Only one promo code may be applied; a second replaces the first only after confirmation.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE8",
+            "text": "Fixed discount is capped so discounted subtotal never goes below ₹0.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          },
+          {
+            "rule": "RULE9",
+            "text": "Discount applies to subtotal only; shipping and taxes are calculated on discounted subtotal.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          }
+        ],
+        "required_messages": [
+          {
+            "ac": "AC3",
+            "message": "This code requires a minimum order of ₹1000.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC4",
+            "message": "This code has expired.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC5",
+            "message": "Invalid promo code.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC7",
+            "message": "This code has already been used.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          },
+          {
+            "ac": "AC10",
+            "message": "Enter a promo code.",
+            "covered": true,
+            "example_test_cases": [
+              "",
+              ""
+            ]
+          }
+        ],
+        "gaps": [],
+        "covered_acceptance_criteria": [
+          "AC1",
+          "AC2",
+          "AC3",
+          "AC4",
+          "AC5",
+          "AC6",
+          "AC7",
+          "AC8",
+          "AC9",
+          "AC10",
+          "AC11",
+          "AC12"
+        ],
+        "uncovered_acceptance_criteria": []
+      }
+    }
+  ]
+}
