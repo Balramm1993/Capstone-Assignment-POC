@@ -1,0 +1,16 @@
+[
+  {
+    "feature_id": "A",
+    "feature": "User Login",
+    "generated_cases": 36,
+    "final_gaps": [],
+    "iterations": 2
+  },
+  {
+    "feature_id": "B",
+    "feature": "Apply Promo Code at Checkout",
+    "generated_cases": 48,
+    "final_gaps": [],
+    "iterations": 2
+  }
+]

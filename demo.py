@@ -22,7 +22,7 @@ OUT_DIR = ROOT / "outputs"
 
 def load_specs() -> dict[str, dict[str, Any]]:
     specs = {}
-        for path in sorted(SPEC_DIR.glob("feature_*.json")):
+    for path in sorted(SPEC_DIR.glob("feature_*.json")):
         spec = json.loads(path.read_text(encoding="utf-8"))
         # normalize feature ids to lowercase so the interactive prompts match
         # expected inputs (a/b) regardless of JSON casing
