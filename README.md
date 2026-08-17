@@ -57,6 +57,29 @@ The interactive CLI lets an evaluator:
 
 This is the recommended live demo entry point because it demonstrates that the project is an interactive test-design agent rather than only a folder of pre-generated files.
 
+## Web UI (optional)
+
+Alternatively, a lightweight web UI is included to explore the agent in a browser. To use it:
+
+1. Install the web dependency into your environment:
+
+```powershell
+python -m pip install -r requirements.txt
+```
+
+2. Start the web server:
+
+```powershell
+python web_ui.py
+```
+
+3. Open the frontend in your browser:
+
+http://127.0.0.1:5002
+
+The UI provides buttons to `List features`, `Generate suites`, `Show A loop`, `Show AC6 cases`, `Show coverage`, and `List outputs`.
+
+There is also a small programmatic client `demo_web_client.py` that exercises the endpoints and prints results.
 ## Run tests
 
 ```bash
