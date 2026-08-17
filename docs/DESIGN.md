@@ -1,145 +1,76 @@
 # Design Writeup
 
-## 1. Problem
+## Problem
 
-The assignment requires an agent that reads a user story, acceptance criteria and feature rules, then produces a categorized, requirement-traceable suite. A useful solution must do more than generate many plausible cases: it must detect omissions and repair them.
+Given a user story, acceptance criteria and explicit business rules, generate a categorized, requirement-traceable test suite for both supplied features. The suite must include positive, negative, boundary and edge coverage, risk prioritization, importable output and an explicit coverage-gap report.
 
-The upgraded implementation therefore treats **coverage analysis as part of generation**, not as a post-hoc manual claim.
-
-## 2. Architecture
+## Architecture
 
 ```text
-JSON requirement
-      |
-      v
+Feature JSON
+   ↓
 Requirement parser
-      |
-      +--> user story / description
-      +--> acceptance criteria
-      +--> explicit rules / notes
-      |
-      v
-Initial generator
-      |  positive + negative draft
-      v
+   ↓
+Draft test generator
+   ↓
 Coverage critic
-      |
-      +--> AC/category gaps
-      +--> explicit business-rule gaps
-      +--> required-message gaps
-      |
-      v
-Targeted repair generator
-      |
-      +--> boundary cases
-      +--> edge/state/timing cases
-      +--> exact-message assertions
-      |
-      +----> re-critique (until clean or max iterations)
-      |
-      v
-CSV + Gherkin + JSON coverage reports
+   ├── acceptance-criteria coverage
+   ├── category coverage
+   ├── required-message coverage
+   └── explicit business-rule coverage
+   ↓
+Targeted repair
+   ↓
+Re-critique
+   ↓
+CSV + Gherkin + coverage reports
 ```
 
-The initial generator intentionally starts with a smaller draft. This is important: the first iteration is allowed to have gaps, which demonstrates a genuine **generate -> critique -> repair** loop rather than a fake loop where the first draft is already complete.
+The implementation is deterministic and does not require an external API key. This makes the demo reproducible in a clean CI environment. The generation layer is isolated so an LLM adapter could be added later without changing the traceability/export pipeline.
 
-## 3. Requirement-driven generation
+## Generate → Critique → Repair
 
-Every test case contains:
+The first pass intentionally creates a smaller draft. The critic checks each acceptance criterion and identifies missing meaningful categories, required messages and explicit rules. The repair stage adds requirement-specific scenarios rather than generic filler. The repaired suite is critiqued again until the gap list is empty or the configured iteration limit is reached.
 
-- feature
-- category: positive / negative / boundary / edge
-- priority
+This is the core agentic behavior required by the assignment: the final suite is the result of iterative self-checking, not a single-shot list.
+
+## Semantic coverage examples
+
+### Login
+
+The suite explicitly covers password boundaries of **7 / 8 / 64 / 65** characters, blank-field request suppression, email-format partitions, the **4 vs 5** lockout threshold, the **15-minute** qualifying window, the **30-minute** lock duration, email/password case sensitivity, the **23:59:59 / 24:00:00** session boundary, logout invalidation and inactive-account access control.
+
+### Promo
+
+The suite explicitly covers percentage calculations, fixed-code minimum **₹999 / ₹1000 / ₹1001**, expiry timing, invalid codes, case normalization, single-use **per customer**, replacement confirmation/cancellation, the discount-cap **₹150 / ₹200 / ₹201** boundaries, shipping/tax calculation from the discounted subtotal, whitespace handling and cart revalidation at **₹1000 / ₹999**.
+
+## Traceability and risk
+
+Every generated test contains:
+
 - acceptance criterion ID
-- rule trace
-- title
+- business-rule trace where applicable
+- category
+- risk priority
 - preconditions
-- executable steps
+- steps
 - expected result
-- risk
-- source (initial generation, targeted rule repair, message repair, etc.)
 
-The supplied login and promo requirements are used as input JSON, not as a hard-coded list of final test cases.
+High-impact authentication and pricing/security scenarios receive P0/P1 priorities.
 
-The generator uses the language of each acceptance criterion to select meaningful scenarios. Timing language produces lockout/session boundary cases; minimum/amount language produces threshold cases; case-insensitive language produces case permutations; replacement/cart-change language produces state-transition cases.
+## Outputs
 
-## 4. Critique design
+The agent exports:
 
-The critic checks three layers:
+- CSV test suites
+- Gherkin/BDD feature files
+- coverage JSON
+- coverage-gap Markdown reports
 
-### Acceptance-criterion coverage
-Every AC must have all four assignment categories represented.
+## Testing strategy
 
-### Explicit rule coverage
-For Feature B, every promo rule is checked independently. This prevents a suite from claiming AC coverage while silently missing a rule such as per-customer usage, discount caps, or discounted-subtotal tax calculation.
+The regression suite checks final zero-gap status, category coverage, exact required messages, business-rule coverage, concrete boundary scenarios, generate/critique/repair iteration behavior and importable traceable output.
 
-### Exact required messages
-Quoted error messages in the requirements are extracted and checked against test expectations.
+## What broke and how it was fixed
 
-The coverage report therefore answers not only "is AC3 present?" but also "which categories, rules and exact messages are covered?"
-
-## 5. Repair loop
-
-When the critic finds a gap, the repair stage generates a **specific** case for that gap. It does not add generic filler such as "Boundary coverage for AC3". Examples include:
-
-- Login: 4 vs 5 failed attempts and the 15-minute lockout window.
-- Login: 23:59:59 vs 24:00 session expiry.
-- Login: 7/8/64/65 character password boundaries.
-- Promo: ₹999/₹1000/₹1001 minimum-order boundary.
-- Promo: ₹150/₹200/₹201 discount-cap boundary.
-- Promo: same customer reuse vs another customer.
-- Promo: replacement confirmation/cancellation.
-- Promo: cart changes that cross the eligibility threshold.
-
-The loop stops when the critic reports zero gaps or when the configured iteration limit is reached.
-
-## 6. Output design
-
-The repository generates:
-
-- `all_test_cases.csv` — combined import-friendly suite.
-- `test_cases_A.csv` and `test_cases_B.csv` — feature-specific CSVs.
-- `test_suite_A.feature` and `test_suite_B.feature` — Gherkin/BDD.
-- `coverage_report_A.json` and `coverage_report_B.json` — detailed machine-readable evidence.
-- `coverage_summary.json` — final run summary.
-
-CSV columns include the AC ID and rule trace, making the suite directly suitable for mapping into TestRail/Zephyr import fields.
-
-## 7. Risk-based prioritization
-
-P0 is used for authentication, account security, pricing integrity, lockout, session, promo eligibility and other high-impact behaviors. P1 is used for important validation, normalization and secondary state behavior.
-
-The priority is attached to every test case rather than being a separate report.
-
-## 8. What broke and how it was fixed
-
-### Generic filler cases
-The first version used generic category templates. These could technically satisfy a category check while adding little testing value.
-
-**Fix:** repair cases are now feature/rule specific, with concrete values, messages, state transitions and timing boundaries.
-
-### Weak coverage model
-The first critic only checked whether every AC had one case in each category.
-
-**Fix:** the critic now checks AC/category coverage, explicit business rules and exact required messages.
-
-### Password boundary omission
-The original suite covered 8 and 64 characters but not 7 and 65.
-
-**Fix:** the login suite now explicitly tests 7/8/64/65.
-
-### Promo per-customer usage
-The original suite checked reuse by the same customer but did not clearly prove the rule was per customer.
-
-**Fix:** the suite now tests Customer A reuse and Customer B first use.
-
-### Pytest/import discovery issue
-The original tests could fail under standard test discovery because the repository root was not guaranteed to be importable.
-
-**Fix:** the test module adds the repository root to `sys.path`, and the suite is runnable with `python -m unittest discover`.
-
-## 9. Validation
-
-The upgraded repository validates that both feature specifications reach zero final gaps, every AC has all four categories, required messages are asserted, promo rules are covered, the generate/critique/repair loop takes multiple iterations, and the CSV export remains requirement-traceable.
-
-The current generated run contains **36 login cases + 48 promo cases = 84 cases**, with two iterations per feature and zero final coverage gaps.
+During development the project encountered path/import issues and an interactive-demo indentation problem. The test suite now inserts the repository root into `sys.path`, and the CLI loader was corrected so the demo starts cleanly. Regression tests were strengthened so future changes cannot silently remove the important boundary and business-rule scenarios.
