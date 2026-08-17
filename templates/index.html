@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Test Case Generator — Demo UI</title>
+    <style>
+      body{font-family:Segoe UI,Arial;margin:18px}
+      button{margin:6px;padding:8px 12px}
+      pre{background:#f4f4f4;padding:12px;border:1px solid #ddd;white-space:pre-wrap}
+      .row{margin-bottom:12px}
+    </style>
+  </head>
+  <body>
+    <h2>Test Case Generator — Demo UI</h2>
+    <div class="row">
+      <button id="btn-features">List features</button>
+      <button id="btn-generate">Generate suites</button>
+      <button id="btn-loop-a">Show A loop</button>
+      <button id="btn-ac6">Show AC6 cases (A)</button>
+      <button id="btn-coverage-a">Show coverage (A)</button>
+      <button id="btn-outputs">List outputs</button>
+    </div>
+
+    <div class="row"><strong>Result:</strong></div>
+    <pre id="output">(idle)</pre>
+
+    <script>
+      const out = id => document.getElementById(id);
+      const show = v => out('output').textContent = JSON.stringify(v, null, 2);
+
+      document.getElementById('btn-features').onclick = async () => show(await (await fetch('/features')).json());
+      document.getElementById('btn-generate').onclick = async () => show(await (await fetch('/generate')).json());
+      document.getElementById('btn-loop-a').onclick = async () => show(await (await fetch('/feature/a/loop')).json());
+      document.getElementById('btn-ac6').onclick = async () => show(await (await fetch('/feature/a/cases?ac=AC6')).json());
+      document.getElementById('btn-coverage-a').onclick = async () => show(await (await fetch('/feature/a/coverage')).json());
+      document.getElementById('btn-outputs').onclick = async () => show(await (await fetch('/outputs')).json());
+    </script>
+  </body>
+</html>
