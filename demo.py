@@ -224,6 +224,8 @@ def main():
         elif choice == "5":
             header("FINAL COVERAGE SUMMARY")
             for fid, result in results.items():
+                if "_spec" in fid or "critique" not in result:
+                    continue
                 covered = len(result["critique"]["covered_acceptance_criteria"])
                 print(f"Feature {fid.upper()}: {len(result['cases'])} cases | {len(result['iterations'])} iterations | "
                       f"ACs covered: {covered} | gaps: {len(result['critique']['gaps'])}")
