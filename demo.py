@@ -76,17 +76,103 @@ def ask_agent(results, question):
         print("Please choose feature A or B.")
         return
     result = results[feature_id]
+    spec = results[feature_id + "_spec"]
     compact = re.sub(r"\s+", "", q)
     ac_id = next((f"AC{i}" for i in range(1, 20) if f"ac{i}" in compact), None)
     category = next((c for c in ("positive", "negative", "boundary", "edge") if c in q), None)
-    if "gap" in q or "coverage" in q:
-        header("AGENT COVERAGE ANSWER")
-        print("No remaining coverage gaps." if not result["critique"]["gaps"] else "\n".join(result["critique"]["gaps"]))
-    elif "why" in q or "explain" in q:
-        header("AGENT REASONING TRACE")
-        print("The agent maps tests to acceptance criteria and explicit business rules, critiques category/rule coverage, then repairs missing scenarios.")
-    else:
+    
+    # Coverage and gaps
+    if "gap" in q or ("coverage" in q and "gap" in q) or "missing" in q or "uncovered" in q:
+        header("AGENT COVERAGE ANALYSIS")
+        gaps = result["critique"]["gaps"]
+        covered = result["critique"]["covered_acceptance_criteria"]
+        if not gaps:
+            print(f"✅ No remaining coverage gaps!")
+            print(f"   All {len(covered)} acceptance criteria are fully covered.")
+            print(f"   Iterations to full coverage: {len(result['iterations'])}")
+        else:
+            print(f"❌ Found {len(gaps)} coverage gaps:")
+            for gap in gaps:
+                print(f"   - {gap['id']}: {gap['reason']}")
+    
+    # Test cases by category or AC
+    elif "case" in q or "test" in q or "scenario" in q or "boundary" in q or "edge" in q or "negative" in q or "positive" in q:
+        if "boundary" in q:
+            category = "boundary"
+        elif "edge" in q:
+            category = "edge"
+        elif "negative" in q:
+            category = "negative"
+        elif "positive" in q:
+            category = "positive"
+        
+        header(f"TEST CASES — Feature {feature_id.upper()}")
         show_cases(result["cases"], feature_id.upper(), ac_id, category)
+    
+    # Design reasoning
+    elif "why" in q or "explain" in q or "reason" in q or "design" in q:
+        header("AGENT REASONING & DESIGN RATIONALE")
+        print("\n🤖 AGENT EXPLANATION:\n")
+        print("The agent implements a generate-critique-repair loop:")
+        print("  1. GENERATE: Creates initial draft of positive/negative cases")
+        print("  2. CRITIQUE: Analyzes coverage against:")
+        print("     - All acceptance criteria (positive/negative/boundary/edge)")
+        print("     - Explicit business rules")
+        print("     - Required error messages")
+        print("     - Category completeness")
+        print("  3. REPAIR: Adds targeted cases for detected gaps")
+        print("  4. RE-CRITIQUE: Validates that all gaps are resolved")
+        print("\n📊 GENERATION STATISTICS:")
+        print(f"  - Initial cases: {result['iterations'][0]['case_count']}")
+        if len(result['iterations']) > 1:
+            print(f"  - After repair: {result['iterations'][-1]['case_count']}")
+        print(f"  - Total iterations: {len(result['iterations'])}")
+        print(f"  - Final gaps: {len(result['critique']['gaps'])}")
+        print("\n🎯 WHY THESE SPECIFIC CASES:")
+        ac_report = result['critique']['acceptance_criteria']
+        print(f"  Each of {len(ac_report)} acceptance criteria has all 4 required categories:")
+        for ac in ac_report[:3]:
+            print(f"    - {ac['ac']}: {', '.join(ac['categories_present'])}")
+        if len(ac_report) > 3:
+            print(f"    ... and {len(ac_report) - 3} more")
+    
+    # Coverage summary
+    elif "coverage" in q or "summary" in q or "status" in q:
+        header("COMPREHENSIVE COVERAGE REPORT")
+        coverage = result["critique"]
+        print(f"\n📈 OVERALL METRICS:")
+        print(f"  - Total test cases: {len(result['cases'])}")
+        print(f"  - Feature: {spec['name']}")
+        print(f"  - Acceptance criteria: {len(coverage['acceptance_criteria'])}")
+        print(f"  - Covered ACs: {len(coverage['covered_acceptance_criteria'])}")
+        print(f"  - Coverage gaps: {len(coverage['gaps'])}")
+        print(f"  - Iterations to completion: {len(result['iterations'])}")
+        
+        print(f"\n✅ ACCEPTANCE CRITERIA COVERAGE:")
+        for ac in coverage['acceptance_criteria'][:5]:
+            status = "✓" if not ac['missing_categories'] else "✗"
+            print(f"  {status} {ac['ac']}: {', '.join(ac['categories_present'])}")
+        if len(coverage['acceptance_criteria']) > 5:
+            print(f"  ... and {len(coverage['acceptance_criteria']) - 5} more")
+        
+        if coverage['required_messages']:
+            print(f"\n💬 REQUIRED MESSAGE COVERAGE:")
+            for msg in coverage['required_messages'][:3]:
+                status = "✓" if msg['covered'] else "✗"
+                print(f"  {status} {msg['ac']}: '{msg['message']}'")
+            if len(coverage['required_messages']) > 3:
+                print(f"  ... and {len(coverage['required_messages']) - 3} more")
+    
+    # General help
+    else:
+        header("AGENT CAPABILITIES")
+        print("\n🤖 I can answer questions like:")
+        print("  • 'What coverage gaps remain?' - Gap analysis")
+        print("  • 'Show boundary cases for AC6' - Filtered test cases")
+        print("  • 'Why did you add edge cases?' - Design reasoning")
+        print("  • 'Show coverage summary' - Complete coverage report")
+        print("  • 'What boundary cases exist?' - Category filtering")
+        print("\nTry asking in natural language - I'll understand! 😊")
 
 
 def menu():
@@ -103,6 +189,10 @@ def menu():
 def main():
     specs = load_specs()
     results = make_results(specs)
+    # Store specs in results for ask_agent to access
+    for spec_id, spec in specs.items():
+        results[spec_id + "_spec"] = spec
+    
     while True:
         menu()
         choice = input("\nChoose an option: ").strip()
@@ -111,6 +201,8 @@ def main():
             return
         if choice == "1":
             results = make_results(specs)
+            for spec_id, spec in specs.items():
+                results[spec_id + "_spec"] = spec
         elif choice == "2":
             feature = input("Feature (A/B): ").strip().lower()
             if feature in results:

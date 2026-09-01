@@ -3,38 +3,316 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Test Case Generator — Demo UI</title>
+    <title>Test Case Generator — Intelligent Agent UI</title>
     <style>
-      body{font-family:Segoe UI,Arial;margin:18px}
-      button{margin:6px;padding:8px 12px}
-      pre{background:#f4f4f4;padding:12px;border:1px solid #ddd;white-space:pre-wrap}
-      .row{margin-bottom:12px}
+      * { box-sizing: border-box; }
+      body { font-family: Segoe UI, Arial, sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
+      
+      .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+      
+      .header { 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      
+      .header h1 { margin: 0; font-size: 28px; }
+      .header p { margin: 5px 0 0 0; opacity: 0.9; }
+      
+      .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      
+      .panel { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; }
+      
+      .panel h2 { margin-top: 0; color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+      
+      .chat-container { display: flex; flex-direction: column; height: 600px; }
+      
+      #chat-history { 
+        flex: 1; 
+        overflow-y: auto; 
+        border: 1px solid #ddd; 
+        border-radius: 4px; 
+        padding: 12px;
+        background: #fafafa;
+        margin-bottom: 12px;
+      }
+      
+      .message { 
+        margin-bottom: 12px; 
+        padding: 10px; 
+        border-radius: 4px;
+        animation: slideIn 0.3s ease-in;
+      }
+      
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .message.user { 
+        background: #667eea; 
+        color: white; 
+        margin-left: 20px;
+        text-align: right;
+      }
+      
+      .message.agent { 
+        background: #e8f5e9; 
+        color: #333;
+        margin-right: 20px;
+        border-left: 3px solid #667eea;
+      }
+      
+      .message.error { 
+        background: #ffebee; 
+        color: #c62828;
+        margin-right: 20px;
+        border-left: 3px solid #f44336;
+      }
+      
+      .input-group {
+        display: flex;
+        gap: 8px;
+      }
+      
+      input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      
+      button {
+        padding: 10px 16px;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.3s;
+      }
+      
+      button:hover { background: #764ba2; }
+      button:active { transform: scale(0.98); }
+      
+      .quick-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      
+      .quick-buttons button {
+        padding: 8px;
+        font-size: 12px;
+      }
+      
+      select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        cursor: pointer;
+      }
+      
+      pre {
+        background: #f4f4f4;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 12px;
+        max-height: 400px;
+        overflow-y: auto;
+        margin: 8px 0;
+      }
+      
+      .feature-selector {
+        margin-bottom: 12px;
+      }
+      
+      .tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 2px solid #ddd; }
+      .tab { padding: 8px 16px; cursor: pointer; border-bottom: 3px solid transparent; }
+      .tab.active { border-bottom-color: #667eea; color: #667eea; font-weight: 500; }
+      .tab-content { display: none; }
+      .tab-content.active { display: block; }
+      
+      .data-display {
+        background: #f5f5f5;
+        padding: 12px;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: auto;
+        font-size: 12px;
+      }
     </style>
   </head>
   <body>
-    <h2>Test Case Generator — Demo UI</h2>
-    <div class="row">
-      <button id="btn-features">List features</button>
-      <button id="btn-generate">Generate suites</button>
-      <button id="btn-loop-a">Show A loop</button>
-      <button id="btn-ac6">Show AC6 cases (A)</button>
-      <button id="btn-coverage-a">Show coverage (A)</button>
-      <button id="btn-outputs">List outputs</button>
+    <div class="container">
+      <div class="header">
+        <h1>🤖 Test Case Generator Agent</h1>
+        <p>Intelligent requirement-driven test suite generation with live question-answering</p>
+      </div>
+      
+      <div class="layout">
+        <!-- Chat Interface (Left) -->
+        <div class="panel">
+          <h2>💬 Chat with Agent</h2>
+          
+          <div class="feature-selector">
+            <label for="feature-select">Feature:</label>
+            <select id="feature-select">
+              <option value="a">Feature A (User Login)</option>
+              <option value="b">Feature B (Promo Code)</option>
+            </select>
+          </div>
+          
+          <div class="quick-buttons">
+            <button onclick="quickQuestion('What coverage gaps remain?')">Coverage Gaps</button>
+            <button onclick="quickQuestion('Show boundary cases for AC1')">Boundary Cases</button>
+            <button onclick="quickQuestion('Why did the agent add edge cases?')">Agent Reasoning</button>
+            <button onclick="quickQuestion('Show coverage summary')">Coverage Summary</button>
+          </div>
+          
+          <div class="chat-container">
+            <div id="chat-history"></div>
+            <div class="input-group">
+              <input type="text" id="question-input" placeholder="Ask the agent a question..." onkeypress="handleKeyPress(event)">
+              <button onclick="askAgent()">Ask</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Control Panel (Right) -->
+        <div class="panel">
+          <h2>⚙️ Control Panel</h2>
+          
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab('operations')">Operations</div>
+            <div class="tab" onclick="switchTab('results')">Results</div>
+          </div>
+          
+          <div id="operations" class="tab-content active">
+            <div style="display: grid; gap: 8px;">
+              <button onclick="listFeatures()">📋 List Features</button>
+              <button onclick="generateSuites()">⚡ Generate Suites</button>
+              <button onclick="showLoop('a')">🔄 Show Generation Loop (A)</button>
+              <button onclick="showCoverage('a')">📊 Show Coverage (A)</button>
+              <button onclick="listOutputs()">📁 List Outputs</button>
+            </div>
+          </div>
+          
+          <div id="results" class="tab-content">
+            <div class="data-display" id="result-display">(idle)</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Full Results Panel -->
+      <div class="panel" style="margin-top: 20px;">
+        <h2>📈 Detailed Response</h2>
+        <pre id="detailed-output">(idle)</pre>
+      </div>
     </div>
 
-    <div class="row"><strong>Result:</strong></div>
-    <pre id="output">(idle)</pre>
-
     <script>
-      const out = id => document.getElementById(id);
-      const show = v => out('output').textContent = JSON.stringify(v, null, 2);
-
-      document.getElementById('btn-features').onclick = async () => show(await (await fetch('/features')).json());
-      document.getElementById('btn-generate').onclick = async () => show(await (await fetch('/generate')).json());
-      document.getElementById('btn-loop-a').onclick = async () => show(await (await fetch('/feature/a/loop')).json());
-      document.getElementById('btn-ac6').onclick = async () => show(await (await fetch('/feature/a/cases?ac=AC6')).json());
-      document.getElementById('btn-coverage-a').onclick = async () => show(await (await fetch('/feature/a/coverage')).json());
-      document.getElementById('btn-outputs').onclick = async () => show(await (await fetch('/outputs')).json());
+      const chatHistory = document.getElementById('chat-history');
+      const questionInput = document.getElementById('question-input');
+      const resultDisplay = document.getElementById('result-display');
+      const detailedOutput = document.getElementById('detailed-output');
+      
+      function addMessage(text, type = 'agent') {
+        const msg = document.createElement('div');
+        msg.className = `message ${type}`;
+        msg.textContent = text;
+        chatHistory.appendChild(msg);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+      
+      function quickQuestion(question) {
+        questionInput.value = question;
+        askAgent();
+      }
+      
+      function handleKeyPress(event) {
+        if (event.key === 'Enter') askAgent();
+      }
+      
+      async function askAgent() {
+        const question = questionInput.value.trim();
+        if (!question) return;
+        
+        const feature = document.getElementById('feature-select').value;
+        addMessage(question, 'user');
+        questionInput.value = '';
+        
+        try {
+          const response = await fetch('/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question, feature })
+          });
+          const result = await response.json();
+          
+          if (result.error) {
+            addMessage(`Error: ${result.error}`, 'error');
+          } else {
+            addMessage(result.answer, 'agent');
+            detailedOutput.textContent = JSON.stringify(result, null, 2);
+            if (result.data) {
+              resultDisplay.textContent = JSON.stringify(result.data, null, 2);
+            }
+          }
+        } catch (err) {
+          addMessage(`Error: ${err.message}`, 'error');
+        }
+      }
+      
+      async function listFeatures() {
+        const result = await (await fetch('/features')).json();
+        detailedOutput.textContent = JSON.stringify(result, null, 2);
+        addMessage(`📋 Listed ${Object.keys(result).length} features`, 'agent');
+      }
+      
+      async function generateSuites() {
+        const result = await (await fetch('/generate')).json();
+        detailedOutput.textContent = JSON.stringify(result, null, 2);
+        addMessage(`✅ Generated test suites with ${Object.values(result).reduce((sum, r) => sum + r.cases, 0)} total cases`, 'agent');
+      }
+      
+      async function showLoop(fid) {
+        const result = await (await fetch(`/feature/${fid}/loop`)).json();
+        detailedOutput.textContent = JSON.stringify(result, null, 2);
+        addMessage(`🔄 Generation loop: ${result.iterations.length} iterations`, 'agent');
+      }
+      
+      async function showCoverage(fid) {
+        const result = await (await fetch(`/feature/${fid}/coverage`)).json();
+        detailedOutput.textContent = JSON.stringify(result, null, 2);
+        const covered = result.covered_acceptance_criteria.length;
+        addMessage(`📊 Coverage: ${covered} ACs covered, ${result.gaps.length} gaps`, 'agent');
+      }
+      
+      async function listOutputs() {
+        const result = await (await fetch('/outputs')).json();
+        detailedOutput.textContent = JSON.stringify(result, null, 2);
+        addMessage(`📁 Generated ${result.outputs.length} output files`, 'agent');
+      }
+      
+      function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(tab).classList.add('active');
+      }
+      
+      // Initialize
+      addMessage("👋 Welcome! I'm the Test Case Generator Agent. Ask me questions about test coverage, design decisions, or specific test cases. Try: 'What coverage gaps remain?' or 'Show boundary cases for AC6'", 'agent');
     </script>
   </body>
 </html>
