@@ -24,9 +24,10 @@ def make_results(specs):
     print("\nGenerating suites with generate -> critique -> repair...\n")
     results = {}
     for feature_id, spec in specs.items():
-        result = TestCaseAgent().run(spec)
+        agent = TestCaseAgent()
+        result = agent.run(spec)
         results[feature_id] = result
-        TestCaseAgent.write_outputs(result, OUT_DIR)
+        agent.write_outputs(result, OUT_DIR)
         print(f"[{feature_id.upper()}] {spec['name']}: {len(result['cases'])} cases | "
               f"{len(result['iterations'])} iterations | final gaps: {len(result['critique']['gaps'])}")
     return results
@@ -131,7 +132,7 @@ def main():
         elif choice == "5":
             header("FINAL COVERAGE SUMMARY")
             for fid, result in results.items():
-                covered = len(result["critique"]["by_ac"])
+                covered = len(result["critique"]["covered_acceptance_criteria"])
                 print(f"Feature {fid.upper()}: {len(result['cases'])} cases | {len(result['iterations'])} iterations | "
                       f"ACs covered: {covered} | gaps: {len(result['critique']['gaps'])}")
         elif choice == "6":
